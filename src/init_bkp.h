@@ -22,7 +22,7 @@ typedef struct
   uint8_t hour;
 }tTime;
 
-//static tDate  sDate;
+static tDate  sDate;
 //tTime	sTime;
 
 //void ClockConfigure(void);

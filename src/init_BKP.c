@@ -8,7 +8,8 @@
 #define RST_CLK_FLAG_LSERDY     ((uint32_t)(0x00 | 13))
 #define LSEonTimeOut  				  ((uint16_t)0x0600)
 
-tTime	sTime, sTimeCurnt;
+tTime	sTime;
+tTime	sTimeCurnt;
 int NewDay;
 
 //...................................................................
