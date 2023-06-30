@@ -983,13 +983,13 @@ void RaschotArrayAE (void)
 //	if (stat1[iMUK_ZRU]	& bRazryad) {	fV_AB[76].Fdata += aI_razr*0.002;	}
 //	if (stat1[iMUK_ZRU]	& bZaryad)  {	fV_AB[76].Fdata -= aI_zar *0.002;	}
 //	if (stat1[iMUK_ZRU] & bPC)		  {	fV_AB[76].Fdata += 0.1;	}
-/*
+
 		if (i == 71)  {
 			if (aIzar.Fdata)  akkCn[i].Fdata -= aIzar.Fdata*0.002;
 			if (aIrazr.Fdata) akkCn[i].Fdata += aIrazr.Fdata*0.002;
 			if (bStatPC) 			akkCn[i].Fdata += 0.1;
 		}
-*/		
+		
 		cind++;
 		if (cind==2)	{	ind = !ind;	 cind = 0;	}
 		
