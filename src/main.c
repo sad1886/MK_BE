@@ -461,15 +461,14 @@ void CAN1_IRQHandler()
 	}
 
 	if((can1_status & (1<<CAN_RX_READY)))		{																				// Приём
-//		RecievCanID	 	 = MDR_CAN1->CAN_BUF[nbuf_RX].ID;
-//		RecievCanDLC 	 = MDR_CAN1->CAN_BUF[nbuf_RX].DLC;
+
 		RecievCanDATAH = MDR_CAN1->CAN_BUF[nbuf_RX].DATAH;
 		RecievCanDATAL = MDR_CAN1->CAN_BUF[nbuf_RX].DATAL;
 		
 		if(CAN1->CAN_BUF_CON[nbuf_RX] & (1<<CAN_RX_FULL))	{
 			MDR_CAN1->BUF_CON[nbuf_RX] &= ~(1<<CAN_RX_FULL);														//Флаг готовности приема: 0 – нет принятого сообщения;1 – принятое сообщение в буфере
 		}
-		//MDR_CAN1->INT_EN &= ~(1<<RX_INT_EN);																				// Сброс разрешения прерывания
+
 		//....................................................................................................................
 		cod		= 0x0000000f & MDR_CAN1->CAN_BUF[nbuf_RX].ID >> 12;											// Код пакета
 		adrTx = 0x0000000f & MDR_CAN1->CAN_BUF[nbuf_RX].ID >> 20;											// Адрес узла-передатчика пакета
@@ -495,8 +494,7 @@ void CAN1_IRQHandler()
 		}																																							//  4, 5, 6, 7	адрес МУК1..3 ЗРУ, КПА 
 //
 	}
-//	WWDT_RESET;																																		// Сброс сторожевого таймера
-//	resetInternalWatchdog();																											// Перезапуск (сброс) внутреннего сторожевого таймера.
+
 }
 
 //=================================================================================================================================================
@@ -512,15 +510,14 @@ void CAN2_IRQHandler()
 	}
 
 	if((can2_status & (1<<CAN_RX_READY)))		{																				// Приём
-//		RecievCanID	 	 = MDR_CAN2->CAN_BUF[nbuf_RX].ID;
-//		RecievCanDLC 	 = MDR_CAN2->CAN_BUF[nbuf_RX].DLC;
+
 		RecievCanDATAH = MDR_CAN2->CAN_BUF[nbuf_RX].DATAH;
 		RecievCanDATAL = MDR_CAN2->CAN_BUF[nbuf_RX].DATAL;
 		
 		if(CAN2->CAN_BUF_CON[nbuf_RX] & (1<<CAN_RX_FULL))	{
 			MDR_CAN2->BUF_CON[nbuf_RX] &= ~(1<<CAN_RX_FULL);														//Флаг готовности приема: 0 – нет принятого сообщения;1 – принятое сообщение в буфере
 		}
-		//MDR_CAN2->INT_EN &= ~(1<<RX_INT_EN);																				// Сброс разрешения прерывания
+
 		//....................................................................................................................
 		cod		= 0x0000000f & MDR_CAN2->CAN_BUF[nbuf_RX].ID >> 12;											// Код пакета
 		adrTx = 0x0000000f & MDR_CAN2->CAN_BUF[nbuf_RX].ID >> 20;											// Адрес узла-передатчика пакета
@@ -546,8 +543,7 @@ void CAN2_IRQHandler()
 		}																																							//  4, 5, 6, 7	адрес МУК1..3 ЗРУ, КПА 
 //
 	}
-//	WWDT_RESET;																																		// Сброс сторожевого таймера
-//	resetInternalWatchdog();																											// Перезапуск (сброс) внутреннего сторожевого таймера.
+
 }
 
 
@@ -1693,14 +1689,16 @@ void RunCmdCAN (void)
 	
 		switch (cod)		{																												// Выбор команды:
  			case CAN_MSG_Ok:																											// Подтверждение о получении пакета
-//	MDR_CAN1->CAN_BUF[lbuf_TX].DATAL = (aIrazr.b[0] <<24)|(aIzar.b[1]<<16)|(aIzar.b[0] <<8)|confcmd;	// Четвёртый..первый байт в пакете
-//	MDR_CAN1->CAN_BUF[lbuf_TX].DATAH =  aIrazr.b[1];																									// Восьмой..пятый байт в пакете
-//				aIzar.b[0] = 0xff & (RecievCanDATAL>>8);			
-//				aIzar.b[1] = 0xff & (RecievCanDATAL>>16);			
-//				aIrazr.b[0] = 0xff & (RecievCanDATAL>>24);			
-//				aIrazr.b[1] = 0xff & (RecievCanDATAH);			
+				// Фрагмент кода подготовки данных для передачи в программе ЗРУ	
+				// MDR_CAN1->CAN_BUF[lbuf_TX].DATAL = (aIrazr.b[0] <<24)|(aIzar.b[1]<<16)|(aIzar.b[0] <<8)|confcmd;	// Четвёртый..первый байт в пакете
+				// MDR_CAN1->CAN_BUF[lbuf_TX].DATAH =  aIrazr.b[1];																									// Восьмой..пятый байт в пакете
+				// Получение токов заряда и разряда, и состояния ЗРУ
+				aIzar.b[0] = 0xff & (RecievCanDATAL>>8);			
+				aIzar.b[1] = 0xff & (RecievCanDATAL>>16);			
+				aIrazr.b[0] = 0xff & (RecievCanDATAL>>24);			
+				aIrazr.b[1] = 0xff & (RecievCanDATAH);			
 				bVklZRU = 0x80 & RecievCanDATAL;			
-//				bOkCAN = 1;
+				//				bOkCAN = 1;		Это не актуально!!!
  				break;
 
 			case CAN_Vkl_RS:																											// Подключить разрядный резистор
