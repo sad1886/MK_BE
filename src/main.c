@@ -305,9 +305,11 @@ volatile unsigned char bPauseSetAdr;				// Флаг - пауза
 volatile unsigned char cPauseSetAdr;				// Счётчик для паузы
 volatile int vtstTime;											// Время проверить измнение напряжения АБ
 
+//проводные команды
 volatile int ProvCMD_Period = 12;						// Количество прерываний системного таймера, определяющее период мигания проводными командами
 volatile int ProvCMD_Counter = 0;						// Счетчик прерываний системного таймера, служит для мигания проводными командами
 volatile int ProvCMD_Value= 0;							// Переменная определяет, должен быть сейчас на проводной команде высокий уровень (1), или низкий (0), когда мигаем
+int zz, zr; //запрет заряда, разряда
 //--------------------------- Данные для работы с датой и временем --------------------------------------------------------
 extern tTime	sTime;
 extern int NewDay;
@@ -931,6 +933,8 @@ void RaschotArrayAE (void)
 
 		if (Takkum[i]>0)	{		
 		 
+			//в версии 4.8.7 bVklZRU всегда равна 0
+			bVklZRU = 0;
 			if (bVklZRU)	dAE = dAE_w[nMUK_BE-1][i];			else	dAE = dAE_0[nMUK_BE-1][i];
 			
 			if (i%2) 		{
@@ -990,11 +994,12 @@ void RaschotArrayAE (void)
 //	if (stat1[iMUK_ZRU]	& bZaryad)  {	fV_AB[76].Fdata -= aI_zar *0.002;	}
 //	if (stat1[iMUK_ZRU] & bPC)		  {	fV_AB[76].Fdata += 0.1;	}
 
-		if (i == 71)  {
-			if (aIzar.Fdata)  akkCn[i].Fdata -= aIzar.Fdata*0.002;
-			if (aIrazr.Fdata) akkCn[i].Fdata += aIrazr.Fdata*0.002;
-			if (bStatPC) 			akkCn[i].Fdata += 0.1;
-		}
+//в версии 4.8.7 убрали эти коррекции
+//		if (i == 71)  {
+//			if (aIzar.Fdata)  akkCn[i].Fdata -= aIzar.Fdata*0.002;
+//			if (aIrazr.Fdata) akkCn[i].Fdata += aIrazr.Fdata*0.002;
+//			if (bStatPC) 			akkCn[i].Fdata += 0.1;
+//		}
 		
 		cind++;
 		if (cind==2)	{	ind = !ind;	 cind = 0;	}
@@ -1534,8 +1539,6 @@ void PutParamADC (void)																											// С 27.11.2019
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 void ControlP (void)									// Контроль температуры, давления, напряжения АБ от 14.02.20
 {
-int zz, zr; //запрет заряда, разряда
-	
 // З А П Р Е Т   З А Р Я Д А .............................................................
 ft = pkiDT[0].Fdata;
 	
@@ -1807,6 +1810,8 @@ int main (void)
 	mode = Init_Run;											// Начальрый режим
 //	bPauza5 = 1;	sCount5 =0;							// Флаг отсчёта паузы 5 сек
 //	bOneSec = 0;		cnt_tst30=0;
+	
+	zz = zr = 1; //в начале работы пусть будет запрет заряда и запрет разряда
 
 	while (1)												
 	{
